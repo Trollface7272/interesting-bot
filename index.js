@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 const mysql = require('mysql')
 const rand = require('./functions/randomInt.js')
 const dateFormat = require('dateformat');
+const async = require("async");
+const db = require('./functions/database.js')
 var token = require('./token.js')
 token = token.token
 
@@ -23,11 +25,8 @@ connection.connect(function(err) {
 
 var serverData
 var userData
-
-
-
-
-
+var set
+var sql
 
 bot.on('ready', () => 
 {
@@ -37,6 +36,7 @@ bot.on('ready', () =>
 bot.on('message', function(message)
 {
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
+    if(message.author.bot) return
     var messageContent = message.content.toLowerCase()
     var discordClientId = message.author.id
     var discordServerId = message.channel.id
@@ -44,31 +44,25 @@ bot.on('message', function(message)
     connection.query({sql: "SELECT * FROM `servers` WHERE `discord_id` = "+discordServerId},
         function(error, results, fields) {
         if(error) throw error
+
         if(results[0] == undefined) {
-            connection.query( "INSERT INTO `servers` SET ?",
-                {discord_id: discordServerId}, 
-                function(error, results, fields) {
-                    if(error) throw error
-                }
-            )
+            set = {discord_id: discordServerId}
+            db.insert(connection, set, "servers") 
         }
     })
     connection.query({sql: "SELECT * FROM `users` WHERE `discord_id` = "+discordClientId},
     function(error, results, fields) {
         if(error) throw error
+        
         if(results[0] == undefined) {
-            connection.query( "INSERT INTO `users` SET ?",
-                {discord_id: discordClientId}, 
-                function(error, results, fields) {
-                    if(error) throw error
-                }
-            )
+            set = {discord_id: discordClientId}
+            db.insert(connection, set, "users")
         }
     })
 /*All Commands*/
 
 /*User*/
-    sql = "SELECT * FROM `servers` WHERE `discord_id` = " + discordServerId
+    sql = "SELECT * FROM `users` WHERE `discord_id` = "+discordClientId
     connection.query( {
         sql
     }, function(error, results, fields) {
@@ -84,34 +78,39 @@ bot.on('message', function(message)
         if(error) throw error
         serverData = results[0] //All data from database about server
 
-
-/*Define database for server*/
-    sql = "UPDATE `servers` SET ? WHERE discord_id = " + discordServerId
-    connection.query( sql, {message_count: serverData.message_count + 1} )
+        
+/*Message Count Server*/
+    set =  {message_count: serverData.message_count + 1}
+    db.update(connection, 'servers', discordServerId, set)
     var prefix = serverData.prefix
 
+    
+/*Message Count User*/
+    set = {message_count: userData.message_count + 1} 
+    db.update(connection, 'users', discordClientId, set)
 
-/*Define database for users*/
-    sql = "UPDATE `users` SET ? WHERE discord_id = " + discordClientId
-    connection.query( sql, {message_count: userData.message_count + 1} )
-
-
+/*----------------------------Prefix only----------------------------*/
     if(!(messageContent.substring(0,prefix.length) == prefix)) return
 
 
-    /*Change Prefix*/
+/*Change Prefix*/
     if(messageContent.includes(prefix + 'changeprefix')) {
         pref = require('./features/prefix.js')
         prefix = pref.setPrefix(messageContent, message, connection, discordServerId)
     }
 
 
-    /*Daily credits*/
-    /*if(messageContent.includes(prefix + 'daily')) {
-        var date = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
-        sql = "UPDATE `users` SET ? WHERE discord_id = " + discordClientId
-        connection.query( sql, {credits: userData.credits + 50, daily_date: } )
-    }*/
+/*Daily credits*/
+    if(messageContent.includes(prefix + 'daily')) {
+        var date = new Date()
+        var dateOld = userData.daily_date
+        if(Math.abs(date - dateOld) >= 86400000) {
+            set = {credits: userData.credits + 50, daily_date: date}
+            db.update(connection, 'users', discordClientId, set)
+            let credits = userData.credits + 50
+            message.channel.send('Succesfully claimed your 50 daily credits you now have ' + credits + ' credits')
+        }
+    }
 
 
 /*Flip*/
