@@ -107,11 +107,11 @@ bot.on('message', function(message)
 
 
     /*Daily credits*/
-    if(messageContent.includes(prefix + 'daily')) {
+    /*if(messageContent.includes(prefix + 'daily')) {
         var date = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
         sql = "UPDATE `users` SET ? WHERE discord_id = " + discordClientId
         connection.query( sql, {credits: userData.credits + 50, daily_date: } )
-    }
+    }*/
 
 
 /*Flip*/
