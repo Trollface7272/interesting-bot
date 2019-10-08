@@ -9,6 +9,7 @@
   "author": "Trollface",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.1.0",
     "dateformat": "^3.0.3",
     "discord.js": "^11.5.1",
     "mysql": "^2.17.1"
