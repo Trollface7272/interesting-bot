@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const mysql = require('mysql')
 const rand = require('./functions/randomInt.js')
+const dateFormat = require('dateformat');
 var token = require('./token.js')
 token = token.token
 
@@ -102,6 +103,14 @@ bot.on('message', function(message)
     if(messageContent.includes(prefix + 'changeprefix')) {
         pref = require('./features/prefix.js')
         prefix = pref.setPrefix(messageContent, message, connection, discordServerId)
+    }
+
+
+    /*Daily credits*/
+    if(messageContent.includes(prefix + 'daily')) {
+        var date = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+        sql = "UPDATE `users` SET ? WHERE discord_id = " + discordClientId
+        connection.query( sql, {credits: userData.credits + 50, daily_date: } )
     }
 
 
