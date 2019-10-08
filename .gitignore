@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 node_modules/
 package-lock.json
-=======
-node_modules/
-package-lock.json
->>>>>>> 999fbca62e2cddc80f9d59f386d55cd9e0e1b435
 Procfile
+token.js
