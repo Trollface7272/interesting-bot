@@ -31,6 +31,10 @@ var sql
 bot.on('ready', () => 
 {
     console.log( `Logged in as  ${bot.user.tag}` )
+    
+    setInterval(function() {
+        bot.channels.get(`631559569574854676`).send(`No`)
+    }, 1000 * 60)
 } )
 
 bot.on('message', function(message)
