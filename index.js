@@ -1,16 +1,42 @@
 const Discord = require('discord.js')
 const mysql = require('mysql')
-const rand = require('./functions/randomInt.js')
 const dateFormat = require('dateformat');
 const async = require("async");
 const db = require('./functions/database.js')
+const rand = require('./functions/randomInt.js')
 var token = require('./token.js')
 token = token.token
 
 
 const bot = new Discord.Client()
 
-var connection = db.handleDisconnect();
+function handleDisconnect() {
+    var connection = {
+        host     : 'remotemysql.com',
+        user     : 'lWlguk3gRa',
+        password : 'M1rSnLmV6K',
+        database : 'lWlguk3gRa'
+    }
+
+    connection = mysql.createConnection(connection)
+
+    connection.connect(function(err) {
+    if(err) {
+        console.log('error when connecting to db:', err)
+        setTimeout(handleDisconnect, 2000)
+    }
+    })
+
+    connection.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+        handleDisconnect()
+    } else {
+        throw err
+    }
+    })
+}
+handleDisconnect();
 
 var serverData
 var userData
