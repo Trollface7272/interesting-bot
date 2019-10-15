@@ -9,19 +9,8 @@ token = token.token
 
 
 const bot = new Discord.Client()
-const connection = mysql.createConnection({
-    host     : 'remotemysql.com',
-    user     : 'lWlguk3gRa',
-    password : 'M1rSnLmV6K',
-    database : 'lWlguk3gRa'
-})
-connection.connect(function(err) {
-    if (err) {
-        console.error('error connecting: ' + err.stack)
-        return;
-    }
-    console.log('connected as id ' + connection.threadId)
-})
+
+var connection = db.handleDisconnect();
 
 var serverData
 var userData
@@ -31,14 +20,21 @@ var sql
 bot.on('ready', () => 
 {
     console.log( `Logged in as  ${bot.user.tag}` )
-    
-    setInterval(function() {
-        bot.channels.get(`631559569574854676`).send(`No`)
-    }, 1000 * 60)
+
 } )
 
 bot.on('message', function(message)
 {
+    if(connection.state === 'disconected')
+    {
+        connection.connect(function(err) {
+            if (err) {
+                console.error('error connecting: ' + err.stack)
+                return;
+            }
+            console.log('connected as id ' + connection.threadId)
+        })
+    }
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
     if(message.author.bot) return
     var messageContent = message.content.toLowerCase()
@@ -46,7 +42,7 @@ bot.on('message', function(message)
     var discordServerId = message.channel.id
 
     connection.query({sql: "SELECT * FROM `servers` WHERE `discord_id` = "+discordServerId},
-        function(error, results, fields) {
+    function(error, results, fields) {
         if(error) throw error
 
         if(results[0] == undefined) {
@@ -113,7 +109,8 @@ bot.on('message', function(message)
             db.update(connection, 'users', discordClientId, set)
             let credits = userData.credits + 50
             message.channel.send('Succesfully claimed your 50 daily credits you now have ' + credits + ' credits')
-        }
+        }else 
+        message.channel.send('No')
     }
 
 
@@ -122,9 +119,10 @@ bot.on('message', function(message)
     {
         var spin = require('./features/spin.js')
         spin.spin(message, rand.random(0,10))
-    }  
+    } 
     })
     })
+    
 })
 
 
@@ -134,4 +132,4 @@ bot.on('message', function(message)
 
 
 
-bot.login(token);
+bot.login(token)
