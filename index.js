@@ -10,15 +10,19 @@ token = token.token
 
 const bot = new Discord.Client()
 
+
+var connection
+
+
 function handleDisconnect() {
-    var connection = {
+    var login = {
         host     : 'remotemysql.com',
         user     : 'lWlguk3gRa',
         password : 'M1rSnLmV6K',
         database : 'lWlguk3gRa'
     }
 
-    connection = mysql.createConnection(connection)
+    connection = mysql.createConnection(login)
 
     connection.connect(function(err) {
     if(err) {
@@ -51,16 +55,6 @@ bot.on('ready', () =>
 
 bot.on('message', function(message)
 {
-    if(connection.state === 'disconected')
-    {
-        connection.connect(function(err) {
-            if (err) {
-                console.error('error connecting: ' + err.stack)
-                return;
-            }
-            console.log('connected as id ' + connection.threadId)
-        })
-    }
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
     if(message.author.bot) return
     var messageContent = message.content.toLowerCase()
