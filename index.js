@@ -1,9 +1,11 @@
-const Discord = require('discord.js')
-const mysql = require('mysql')
-const dateFormat = require('dateformat');
-const async = require("async");
-const db = require('./functions/database.js')
-const rand = require('./functions/randomInt.js')
+const Discord = require('discord.js'),
+mysql = require('mysql'),
+nh = require('nhentai-js'),
+async = require('async'),
+db = require('./functions/database.js'),
+rand = require('./functions/randomInt.js'),
+nhf = require('./functions/nh.js'),
+nhm = require('./features/nh.js')
 var token = require('./token.js')
 token = token.token
 
@@ -32,7 +34,6 @@ function handleDisconnect() {
     })
 
     connection.on('error', function(err) {
-    console.log('db error', err);
     if(err.code === 'PROTOCOL_CONNECTION_LOST') {
         handleDisconnect()
     } else {
@@ -40,12 +41,13 @@ function handleDisconnect() {
     }
     })
 }
-handleDisconnect();
+handleDisconnect()
 
 var serverData
 var userData
 var set
 var sql
+var newestBook
 
 bot.on('ready', () => 
 {
@@ -57,9 +59,8 @@ bot.on('message', function(message)
 {
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
     if(message.author.bot) return
-    var messageContent = message.content.toLowerCase()
-    var discordClientId = message.author.id
-    var discordServerId = message.channel.id
+
+    var messageContent = message.content.toLowerCase(), discordClientId = message.author.id, discordServerId = message.channel.id
 
     connection.query({sql: "SELECT * FROM `servers` WHERE `discord_id` = "+discordServerId},
     function(error, results, fields) {
@@ -77,6 +78,25 @@ bot.on('message', function(message)
         if(results[0] == undefined) {
             set = {discord_id: discordClientId}
             db.insert(connection, set, "users")
+        }
+    })
+    connection.query({sql: "SELECT * FROM `nh`"},
+    async function(error, results, fields) {
+        if(results[0] == undefined) {
+            let id = await nhf.getNewestBook(nh)
+
+            set = {newest_id: id, date: new Date()}
+            db.insert(connection, set, "nh")
+            newestBook = id
+
+        }else if(results[0].date.getDay() != new Date().getDay()){
+            let id = await nhf.getNewestBook(nh)
+
+            set = {newest_id: id, date: new Date()}
+            connection.query("UPDATE `nh` SET ? WHERE id = 1", set)
+            newestBook = id
+        }else {
+            newestBook = results[0].newest_id
         }
     })
 /*All Commands*/
@@ -109,39 +129,63 @@ bot.on('message', function(message)
     set = {message_count: userData.message_count + 1} 
     db.update(connection, 'users', discordClientId, set)
 
+
+/*User Tag*/
+    if(userData.tag != message.author.tag) {
+        set = {tag: message.author.tag}
+        db.update(connection, 'users', discordClientId, set)
+    }
+
+
+/*Server Name*/
+    if(serverData.server_name != message.guild.name) {
+        set = {server_name: message.guild.name}
+        db.update(connection, 'servers', discordServerId, set)
+    }
 /*----------------------------Prefix only----------------------------*/
-    if(!(messageContent.substring(0,prefix.length) == prefix)) return
+if(!(messageContent.substring(0,prefix.length) == prefix)) return
 
 
 /*Change Prefix*/
-    if(messageContent.includes(prefix + 'changeprefix')) {
+    if(messageContent.includes(`${prefix}changeprefix`)) {
         pref = require('./features/prefix.js')
         prefix = pref.setPrefix(messageContent, message, connection, discordServerId)
     }
 
 
 /*Daily credits*/
-    if(messageContent.includes(prefix + 'daily')) {
+    if(messageContent.includes(`${prefix}daily`)) {
         var date = new Date()
         var dateOld = userData.daily_date
         if(Math.abs(date - dateOld) >= 86400000) {
             set = {credits: userData.credits + 50, daily_date: date}
             db.update(connection, 'users', discordClientId, set)
             let credits = userData.credits + 50
-            message.channel.send('Succesfully claimed your 50 daily credits you now have ' + credits + ' credits')
+            message.channel.send(`Succesfully claimed your 50 daily credits you now have ${credits} credits`)
         }else 
         message.channel.send('No')
     }
 
 
 /*Flip*/
-    if(messageContent === prefix + 'flip')
+    if(messageContent === `${prefix}flip`)
     {
         var spin = require('./features/spin.js')
         spin.spin(message, rand.random(0,10))
-    } 
+    }
+
+
+/*yes*/
+    if(messageContent.startsWith(`${prefix}nh`)) {
+        (async () => {
+            let rich = await nhm.getBookInfo(newestBook.toString())
+            rich = await nhm.sendInfo(rich)
+            message.channel.send(rich)
+        })()
+        
+    }
     })
-    })
+})
     
 })
 
