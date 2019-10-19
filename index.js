@@ -57,6 +57,7 @@ bot.on('message', async function(message)
 {
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
     if(message.author.bot) return
+    if(message.guild === null) return
     var messageContent = message.content.toLowerCase()
     var discordClientId = message.author.id
     var discordServerId = message.channel.id
@@ -106,19 +107,6 @@ async function getData() {
         message.channel.send(rich)
     }
 
-    if(messageContent.startsWith(`${prefix}nh`) &&
-       messageContent.split(' ').length == 1) {
-        let rich = await nhm.getBookInfo(newestBook.toString(), true)
-        rich = await nhm.sendInfo(rich)
-        message.channel.send(rich)
-    }
-    
-    else if(messageContent.startsWith(`${prefix}nh`) &&
-            messageContent.split(' ').length == 2) {
-        let rich = await nhm.getBookInfo(messageContent.split(' ')[1], false)
-        rich = await nhm.sendInfo(rich)
-        message.channel.send(rich)
-    }
     
 }   
 getData()

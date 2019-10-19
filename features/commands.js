@@ -13,5 +13,18 @@ module.exports = {
 
         if(messageContent.startsWith(`${prefix}flip`))
             spin.spin(message, rand.random(0,10))
+
+        if(messageContent.startsWith(`${prefix}nh`) &&
+           messageContent.split(' ').length == 1) {
+            let rich = await nhm.getBookInfo(newestBook.toString(), true)
+            rich = await nhm.sendInfo(rich)
+            message.channel.send(rich)
+         }
+        if(messageContent.startsWith(`${prefix}nh`) &&
+           messageContent.split(' ').length == 2) {
+            var rich = await nhm.getBookInfo(messageContent.split(' ')[1], false)
+            rich = await nhm.sendInfo(rich)
+            message.channel.send(rich)
+        }
     }
 }
