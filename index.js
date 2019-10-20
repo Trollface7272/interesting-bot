@@ -60,7 +60,7 @@ bot.on('message', async function(message)
     if(message.author.bot) return
     if(message.guild === null) return
     if(bot.token == 'NTg1MTczNTQ0OTYzNjcwMDI3.XaqoAA.h1_5teqsYgWVwD86vUMdddCuiGs')
-        if (message.guild.member('630440015494643716')) return
+        if (message.guild.member('584321366308814848')) return
 
     var messageContent = message.content.toLowerCase()
     var discordClientId = message.author.id
