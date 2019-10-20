@@ -115,6 +115,8 @@ async function getData() {
     if(messageContent.includes('cornflaek') || messageContent.includes('cornflake'))
         message.author.send(new Discord.RichEmbed().setImage('https://cdn.discordapp.com/attachments/584466941817913364/598854232749375489/flaekfix.png'))
 
+    if(messageContent.includes('nigger'))
+        message.author.send('That\'s illegal!')
     
 }   
 getData()
