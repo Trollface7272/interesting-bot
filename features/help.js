@@ -9,7 +9,8 @@ module.exports = {
             `
             \`${prefix}nh, ${prefix}flip, ${prefix}rule34, ${prefix}safebooru
             ${prefix}changeprefix, $resetprefix
-            ${prefix}daily 
+            ${prefix}daily, ${prefix}credits
+            ${prefix}messages
             ${prefix}help\`
             `
         ) 
