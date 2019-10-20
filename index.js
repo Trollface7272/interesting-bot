@@ -64,7 +64,7 @@ bot.on('message', async function(message)
 
     var messageContent = message.content.toLowerCase()
     var discordClientId = message.author.id
-    var discordServerId = message.channel.id
+    var discordServerId = message.guild.id
     var serverData
     var userData
 

@@ -7,7 +7,7 @@ module.exports = {
         )
         .setDescription(
             `
-            \`${prefix}nh, ${prefix}flip 
+            \`${prefix}nh, ${prefix}flip, ${prefix}rule34, ${prefix}safebooru
             ${prefix}changeprefix, $resetprefix
             ${prefix}daily 
             ${prefix}help\`
