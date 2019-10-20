@@ -116,7 +116,7 @@ async function getData() {
         message.author.send(new Discord.RichEmbed().setImage('https://cdn.discordapp.com/attachments/584466941817913364/598854232749375489/flaekfix.png'))
 
     if(messageContent.includes('nigger'))
-        message.author.send('That\'s illegal!')
+        message.author.send('That\'s illegal!').then(db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1}))
     
 }   
 getData()
