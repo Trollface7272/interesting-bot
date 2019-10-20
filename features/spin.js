@@ -9,7 +9,7 @@ module.exports = {
         {
             if(credits < msg[1]) return message.channel.send('Not enough credits.')
             if(x <= 5) credits = credits - msg[1]
-            if(x > 5) credits = credits + msg[1]
+            if(x > 5) credits = credits + parseInt(msg[1])
             db.update(connection, 'users', clientId, {credits: credits})
         }
 
