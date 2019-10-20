@@ -5,14 +5,12 @@ module.exports = {
     spin(message, messageContent, x, userData, connection, clientId){
         var msg = messageContent.split(' ')
         let credits = userData.credits
-        console.log(messageContent)
         if(msg.length != 1)
         {
             if(credits < msg[1]) return message.channel.send('Not enough credits.')
             if(x <= 5) credits = credits - msg[1]
             if(x > 5) credits = credits + msg[1]
             db.update(connection, 'users', clientId, {credits: credits})
-            console.log(credits)
         }
 
         const spin = new Discord.RichEmbed()
