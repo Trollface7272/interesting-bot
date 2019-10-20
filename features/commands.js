@@ -29,6 +29,9 @@ module.exports = {
         if(messageContent.startsWith(`${prefix}safebooru`))
             booru.search(message, messageContent, 'safebooru.org')
 
+        if(messageContent == `${prefix}messages`)
+            message.channel.send(`You sent ${userData.message_count} messages.`)
+
         if(messageContent.startsWith(`${prefix}nh`) &&
            messageContent.split(' ').length == 1) {
             if(!message.channel.nsfw){ message.channel.send('This channel in not NSFW channel'); return }
