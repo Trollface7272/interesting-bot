@@ -15,7 +15,7 @@ module.exports = {
             credits.dailyCredits(connection, userData, discordClientId, db, message)
 
         if(messageContent.startsWith(`${prefix}flip`))
-            spin.spin(message, rand.random(0,10))
+            spin.spin(message, messageContent, rand.random(0,10), userData, connection, discordClientId)
 
         if(messageContent == `${prefix}help`)
             help.help(message, prefix)
