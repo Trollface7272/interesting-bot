@@ -35,6 +35,9 @@ module.exports = {
         if(messageContent == `${prefix}credits`)
             message.channel.send(`You have ${userData.credits} credits.`)
 
+        if(messageContent == `${prefix}nwords`)
+            message.channel.send(`You said the nword ${userData.nwords} times`)
+
         if(messageContent.startsWith(`${prefix}nh`) &&
            messageContent.split(' ').length == 1) {
             if(!message.channel.nsfw){ message.channel.send('This channel in not NSFW channel'); return }
