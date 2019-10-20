@@ -1,6 +1,5 @@
 const Discord = require('discord.js'),
 mysql = require('mysql'),
-dateFormat = require('dateformat'),
 async = require("async"),
 nh = require('nhentai-js'),
 commands = require('./features/commands'),
@@ -51,13 +50,18 @@ handleDisconnect();
 bot.on('ready', () => 
 {
     console.log( `Logged in as  ${bot.user.tag}` )
-} )
+    bot.user.setStatus('available')
+    bot.user.setActivity('$help', {type: 'PLAYING'})
+})
 
 bot.on('message', async function(message)
 {
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
     if(message.author.bot) return
     if(message.guild === null) return
+    if(bot.token == 'NTg1MTczNTQ0OTYzNjcwMDI3.XaqoAA.h1_5teqsYgWVwD86vUMdddCuiGs')
+        if (message.guild.member('630440015494643716')) return
+
     var messageContent = message.content.toLowerCase()
     var discordClientId = message.author.id
     var discordServerId = message.channel.id
@@ -95,17 +99,21 @@ async function getData() {
     var prefix = serverData.prefix
 
     if(messageContent.startsWith(prefix)) 
-        commands.commands(messageContent, message, connection, discordServerId, discordClientId, prefix, userData, db)
+        commands.commands(messageContent, message, connection, discordServerId, discordClientId, prefix, userData, db, newestBook)
 
     if(messageContent == '$resetprefix') 
         pref.setPrefix(`${prefix}changeprefix $`, message, connection, discordServerId)
 
     if(messageContent.startsWith('https://nhentai.net')) {
+        if(!message.channel.nsfw) return 
         message.delete()
         let rich = await nhm.getBookInfo(messageContent.replace(/[^0-9]/g, ''), false)
         rich = await nhm.sendInfo(rich)
         message.channel.send(rich)
     }
+
+    if(messageContent.includes('cornflaek') || messageContent.includes('cornflake'))
+        message.author.send(new Discord.RichEmbed().setImage('https://cdn.discordapp.com/attachments/584466941817913364/598854232749375489/flaekfix.png'))
 
     
 }   

@@ -2,9 +2,12 @@ const pref = require('./prefix')
 const credits = require('./credits')
 const spin = require('./spin')
 const rand = require('../functions/randomInt')
+const help = require('./help')
+const nhm = require('./nh')
+const booru = require('./boorus')
 
 module.exports = {
-    commands(messageContent, message, connection, discordServerId, discordClientId, prefix, userData, db) {
+    async commands(messageContent, message, connection, discordServerId, discordClientId, prefix, userData, db, newestBook) {
         if(messageContent.startsWith(`${prefix}changeprefix`))
             pref.setPrefix(messageContent, message, connection, discordServerId)
 
@@ -14,8 +17,21 @@ module.exports = {
         if(messageContent.startsWith(`${prefix}flip`))
             spin.spin(message, rand.random(0,10))
 
+        if(messageContent == `${prefix}help`)
+            help.help(message, prefix)
+
+        if(messageContent == `${prefix}invite`)
+            message.channel.send('https://discordapp.com/oauth2/authorize?client_id=585173544963670027&scope=bot&permissions=8')
+
+        if(messageContent.startsWith(`${prefix}rule34`))
+            booru.search(message, messageContent, 'rule34')
+
+        if(messageContent.startsWith(`${prefix}safebooru`))
+            booru.search(message, messageContent, 'safebooru.org')
+
         if(messageContent.startsWith(`${prefix}nh`) &&
            messageContent.split(' ').length == 1) {
+            if(!message.channel.nsfw){ message.channel.send('This channel in not NSFW channel'); return }
             let rich = await nhm.getBookInfo(newestBook.toString(), true)
             rich = await nhm.sendInfo(rich)
             message.channel.send(rich)

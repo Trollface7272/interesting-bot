@@ -1,6 +1,7 @@
-const Discord = require('discord.js')
-const nh = require('nhentai-js'),
+const Discord = require('discord.js'),
+nh = require('nhentai-js'),
 rand = require('../functions/randomInt.js')
+arr = require('../functions/arrayHelper')
 
 module.exports = {
     async getBookInfo(newestBook, doRand) {
@@ -15,17 +16,17 @@ module.exports = {
         }
     },
     sendInfo(data) {
-        if(data.details.tags != undefined) var tags = module.exports.arrayToString(data.details.tags)
+        if(data.details.tags != undefined) var tags = arr.arrayToString(data.details.tags)
         else var tags = 'None'
-        if(data.details.characters != undefined) var characters = module.exports.arrayToString(data.details.characters)
+        if(data.details.characters != undefined) var characters = arr.arrayToString(data.details.characters)
         else var characters = 'None'
-        if(data.details.parodies != undefined) var parodies = module.exports.arrayToString(data.details.parodies)
+        if(data.details.parodies != undefined) var parodies = arr.arrayToString(data.details.parodies)
         else var parodies = 'None'
-        if(data.details.artists != undefined) var artists = module.exports.arrayToString(data.details.artists)
+        if(data.details.artists != undefined) var artists = arr.arrayToString(data.details.artists)
         else var artists = 'None'
-        if(data.details.languages != undefined) var languages = module.exports.arrayToString(data.details.languages)
+        if(data.details.languages != undefined) var languages = arr.arrayToString(data.details.languages)
         else var languages = 'None'
-        if(data.details.categories != undefined) var categories = module.exports.arrayToString(data.details.categories)
+        if(data.details.categories != undefined) var categories = arr.arrayToString(data.details.categories)
         else var categories = 'None'
 
 
@@ -48,17 +49,5 @@ module.exports = {
             `
         )
         return rich
-    },
-    arrayToString(tags) {
-        tags.sort((a, b) => a.localeCompare(b))
-
-        var list = ''
-        for(var i = 0; i < tags.length; i++) {
-            tags[i] = tags[i].replace(/ *\([^)]*\) */g, "")
-            list = `${list}, ${tags[i]}` 
-        }
-
-        if(list.startsWith(',')) list = list.substring(2,list.length)
-        return list
     }
 }
