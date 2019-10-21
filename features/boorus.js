@@ -8,11 +8,10 @@ module.exports = {
         if(site == 'safebooru.org') var link = 'safebooru.org/index.php?page=post&s=view&id='
         if(site == 'rule34') var link = 'rule34.xxx/index.php?page=post&s=view&id='
         if(site == 'danbooru') var link = 'danbooru.donmai.us/posts/'
-        
+
         if(messageArray.length == 1)
         await booru.search(site,['1girl'],{random: true}).then(images => {
             for (let image of images) {
-                console.log(images)
                 let embed = new Discord.RichEmbed()
                 .setImage(image.fileUrl)
                 .setTitle(
