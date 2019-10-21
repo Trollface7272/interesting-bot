@@ -37,7 +37,6 @@ function handleDisconnect() {
     })
 
     connection.on('error', function(err) {
-    console.log('db error', err);
     if(err.code === 'PROTOCOL_CONNECTION_LOST') {
         handleDisconnect()
     } else {
@@ -45,7 +44,7 @@ function handleDisconnect() {
     }
     })
 }
-handleDisconnect();
+handleDisconnect()
 
 bot.on('ready', () => 
 {
@@ -69,7 +68,7 @@ bot.on('message', async function(message)
     var userData
 
     db.define(connection, discordServerId, 'servers')
-    db.define(connection, discordClientId, 'users');
+    db.define(connection, discordClientId, 'users')
     
 /*All Commands*/
 
