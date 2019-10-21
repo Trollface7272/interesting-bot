@@ -32,7 +32,7 @@ module.exports = {
                     `( ͡° ͜ʖ ͡°)`
                 )
                 .setURL(
-                    `https://${link}/index.php?page=post&s=view&id=${image.id}`
+                    `https://${link}${image.id}`
                 )
                 message.channel.send(embed)
             }
