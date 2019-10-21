@@ -114,8 +114,11 @@ async function getData() {
     if(messageContent.includes('cornflaek') || messageContent.includes('cornflake'))
         message.author.send(new Discord.RichEmbed().setImage('https://cdn.discordapp.com/attachments/584466941817913364/598854232749375489/flaekfix.png'))
 
-    if(messageContent.includes('nigger'))
-        message.author.send('That\'s illegal!').then(db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1}))
+    if(messageContent.includes('nigger')) {
+        if(userData.disable_dms == 0)
+            message.author.send('That\'s illegal!')
+        db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1})
+    }
     
 }   
 getData()

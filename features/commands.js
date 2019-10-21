@@ -38,6 +38,9 @@ module.exports = {
         if(messageContent == `${prefix}nwords`)
             message.channel.send(`You said the nword ${userData.nwords} times`)
 
+        if(messageContent == `${prefix}disablepms` || messageContent == `${prefix}disabledms`)
+            db.update(connection, 'users', discordClientId, {disable_dms: !userData.disable_dms})
+
         if(messageContent.startsWith(`${prefix}nh`) &&
            messageContent.split(' ').length == 1) {
             if(!message.channel.nsfw){ message.channel.send('This channel in not NSFW channel'); return }
