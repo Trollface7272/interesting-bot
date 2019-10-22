@@ -50,7 +50,7 @@ bot.on('ready', () =>
 {
     console.log( `Logged in as  ${bot.user.tag}` )
     bot.user.setStatus('available')
-    bot.user.setActivity('$help', {type: 'PLAYING'})
+    bot.user.setActivity('$help|$resetprefix', {type: 'PLAYING'})
 })
 
 bot.on('message', async function(message)

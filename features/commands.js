@@ -31,7 +31,7 @@ module.exports = {
             booru.search(message, messageContent, 'safebooru.org')
 
         if(messageContent.startsWith(`${prefix}danbooru`))
-            booru.search(message, messageContent, 'danbooru.org')
+            booru.search(message, messageContent, 'danbooru')
 
         if(messageContent == `${prefix}messages`)
             message.channel.send(`You sent ${userData.message_count} messages.`)
