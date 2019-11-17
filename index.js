@@ -7,7 +7,8 @@ db = require('./functions/database'),
 rand = require('./functions/randomInt'),
 nhf = require('./functions/nh.js'),
 nhm = require('./features/nh.js'),
-pref = require('./features/prefix')
+pref = require('./features/prefix'),
+ctb = require("./features/ctbpp")
 
 var token = require('./token')
 token = token.token
@@ -37,7 +38,7 @@ function handleDisconnect() {
     })
 
     connection.on('error', function(err) {
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+    if(err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED') {
         handleDisconnect()
     } else {
         throw err
@@ -119,7 +120,9 @@ async function getData() {
             message.author.send('That\'s illegal!')
         db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1})
     }
-    
+
+    if(messageContent.startsWith(`${prefix}ctbrspp`))
+        ctb.getCtbpp(message)
 }   
 getData()
 })
