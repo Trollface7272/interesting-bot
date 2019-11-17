@@ -133,6 +133,7 @@ async function getData() {
     }
     if(messageContent.startsWith(`${prefix}dtar`)) {
         if(messageContent.split(' ')[1] == undefined) return message.channel.send('Specify AR')
+        if(isNaN(messageContent.split(' ')[1])) return message.channel.send('AR must be a number')
         message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
     }
 
