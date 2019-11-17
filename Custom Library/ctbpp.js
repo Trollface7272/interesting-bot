@@ -1,5 +1,11 @@
+const osu = require("node-osu")
+var osuApi = new osu.Api('d3bb61f11b973d6c2cdc0dd9ea7998c2a0b15c1e', {
+    // baseUrl: sets the base api url (default: https://osu.ppy.sh/api)
+    notFoundAsError: true, // Reject on not found instead of returning nothing. (default: true)
+    completeScores: false // When fetching scores also return the beatmap (default: false)
+})
 class ctbplaypp {
-    constructor(num300, num100, num50, num50Miss, numMiss, rating, _combo, approachRate, mods) {
+    constructor(num300, num100, num50, num50Miss, numMiss, rating, _combo, approachRate, mods, beatmapId) {
         this.num300 = num300
         this.num100 = num100
         this.num50 = num50
@@ -9,16 +15,22 @@ class ctbplaypp {
         this._combo = _combo
         this.approachRate = approachRate
         this.mods = mods
-        this.pp = this.getPPFromPlay()
+        this.beatmapId = beatmapId
+        this.info = this.getInfo()
     }
-    getPPFromPlay() {
+    async getInfo() {
         var _value,
         maxCombo,
         lengthBonus,
-        approachRateFactor,
+        starMods,
         HD,
         FL,
-        NF
+        NF,
+        DT,
+        HR,
+        EZ,
+        HT,
+        NC
 
         let num300 = this.num300,
         num100 = this.num100,
@@ -28,10 +40,19 @@ class ctbplaypp {
         rating = this.rating,
         _combo = this._combo,
         approachRate = this.approachRate,
-        mods = this.mods
-        
+        mods = this.mods,
+        beatmapId = this.beatmapId
+        HD = false,
+        FL = false,
+        NF = false,
+        DT = false,
+        HR = false,
+        EZ = false,
+        HT = false,
+        NC = false
+
         //Get Mods Used
-        GetMods()
+        await GetRating()
 
         //pp For Aim
         _value = Math.pow(5.0 * max(1.0, rating / 0.0049) - 4.0, 2.0) / 100000.0
@@ -62,16 +83,15 @@ class ctbplaypp {
         //Scale Accuracy
         _value *= Math.pow(Accuracy(), 5.5)
 
-        return _value
+        return {
+            pp: _value,
+            rating: rating,
+            accuracy: Accuracy()
+        }  
 
-        function GetMods() {
-            mods.forEach(mod => {
-                if(mod == 'Hidden') HD = true
-                else HD = false 
-                if(mod == 'Flashlight') FL = true
-                else FL = false 
-                if(mod == 'No-Fail') NF = true 
-                else NF = false
+        async function GetRating() {
+            await osuApi.apiCall('/get_beatmaps?mods='+mods, {b: beatmapId, m: 2, a: 1}).then(score => {
+                rating = score[0].difficultyrating
             });
         }
 

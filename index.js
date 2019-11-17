@@ -122,7 +122,7 @@ async function getData() {
     }
 
     if(messageContent.startsWith(`${prefix}ctbrspp`))
-        ctb.getCtbpp(message)
+        ctb.getCtbpp(message, bot)
 }   
 getData()
 })
