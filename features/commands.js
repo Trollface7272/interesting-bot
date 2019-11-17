@@ -5,6 +5,7 @@ const rand = require('../functions/randomInt')
 const help = require('./help')
 const nhm = require('./nh')
 const booru = require('./boorus')
+const roll = require('./roll')
 
 module.exports = {
     async commands(messageContent, message, connection, discordServerId, discordClientId, prefix, userData, db, newestBook) {
@@ -43,6 +44,9 @@ module.exports = {
 
         if(messageContent == `${prefix}disablepms` || messageContent == `${prefix}disabledms`)
             db.update(connection, 'users', discordClientId, {disable_dms: !userData.disable_dms})
+
+        if(messageContent.startsWith(`${prefix}roll`))
+            roll.roll(messageContent, message)
 
         if(messageContent.startsWith(`${prefix}nh`) &&
            messageContent.split(' ').length == 1) {
