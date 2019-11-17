@@ -131,8 +131,11 @@ async function getData() {
         db.update(connection, 'osu', discordClientId, {osu_username: osuUsername})
         message.channel.send(`Your osu! username has been set to \`${osuUsername}\``)
     }
-    if(messageContent.startsWith(`${prefix}dtar`))
+    if(messageContent.startsWith(`${prefix}dtar`)) {
+        if(messageContent.split(' ')[1] == undefined) return message.channel.send('Specify AR')
         message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
+    }
+
 }   
 getData()
 })
