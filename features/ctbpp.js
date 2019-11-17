@@ -3,14 +3,20 @@ const ctbpp = require("../Custom Library/ctbpp")
 const osu = require("node-osu")
 const osuStuff = require("../functions/getOsuStuff")
 const moment = require('moment')
+const db = require('../functions/database')
 var osuApi = new osu.Api('d3bb61f11b973d6c2cdc0dd9ea7998c2a0b15c1e', {
     // baseUrl: sets the base api url (default: https://osu.ppy.sh/api)
     notFoundAsError: true, // Reject on not found instead of returning nothing. (default: true)
     completeScores: false // When fetching scores also return the beatmap (default: false)
 })
 module.exports = {
-    async getCtbpp(message, bot) {
+    async getCtbpp(message, bot, connection, uid) {
         let name = message.content.split(' ')[1]
+        if(name == undefined) {
+            let userData = await db.getData(connection, uid, 'osu')
+            name = userData.osu_username
+            if(name == null) return message.channel.send(`Please set your osu username or specify user.`)
+        }
         var rating, performance, title, accuracy, s300, s100, s50, miss, s50miss, difficulty, userCombo, approachRate, retries, 
             footer, playDate, now, pp, fcpp, fcPerformance, fcRating, fcAccuracy, fcppDisplay
         await osuApi.getUserRecent({u: name, m: '2', a: '1'}).then(async score => {

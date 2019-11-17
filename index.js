@@ -70,6 +70,7 @@ bot.on('message', async function(message)
 
     db.define(connection, discordServerId, 'servers')
     db.define(connection, discordClientId, 'users')
+    db.define(connection, discordClientId, 'osu')
     
 /*All Commands*/
 
@@ -122,7 +123,13 @@ async function getData() {
     }
 
     if(messageContent.startsWith(`${prefix}ctbrs`))
-        ctb.getCtbpp(message, bot)
+        ctb.getCtbpp(message, bot, connection, discordClientId)
+
+    if(messageContent.startsWith(`${prefix}osuset user`)) {
+        let osuUsername = messageContent.split(' ')[2]
+        db.update(connection, 'osu', discordClientId, {osu_username: osuUsername})
+        message.channel.send(`Your osu! username has been set to \`${osuUsername}\``)
+    }
 }   
 getData()
 })
