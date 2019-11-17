@@ -121,7 +121,7 @@ async function getData() {
         db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1})
     }
 
-    if(messageContent.startsWith(`${prefix}ctbrspp`))
+    if(messageContent.startsWith(`${prefix}ctbrs`))
         ctb.getCtbpp(message, bot)
 }   
 getData()
