@@ -8,7 +8,8 @@ rand = require('./functions/randomInt'),
 nhf = require('./functions/nh.js'),
 nhm = require('./features/nh.js'),
 pref = require('./features/prefix'),
-ctb = require("./features/ctbpp")
+ctb = require('./features/ctbpp'),
+osuStuff = require('./functions/getOsuStuff')
 
 var token = require('./token')
 token = token.token
@@ -130,6 +131,8 @@ async function getData() {
         db.update(connection, 'osu', discordClientId, {osu_username: osuUsername})
         message.channel.send(`Your osu! username has been set to \`${osuUsername}\``)
     }
+    if(messageContent.startsWith(`${prefix}dtar`))
+        message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
 }   
 getData()
 })

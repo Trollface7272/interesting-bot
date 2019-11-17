@@ -63,5 +63,10 @@ module.exports = {
             else return retries
             if(retries == 10) return retries
         }
+    },
+    getDtAr(ar) {
+        if(ar <= 5) return 'no'
+        if(ar > 10) return 'no'
+        if(ar > 5) return ((ar * 2 + 13) / 3).toFixed(2)
     }
 }
