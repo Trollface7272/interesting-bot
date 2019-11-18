@@ -18,20 +18,20 @@ module.exports = {
             if(name == null) return message.channel.send(`Please set your osu username or specify user.`)
         }
         var rating, performance, title, accuracy, s300, s100, s50, miss, s50miss, difficulty, userCombo, approachRate, retries, 
-            footer, playDate, now, pp, fcpp, fcPerformance, fcRating, fcAccuracy, fcppDisplay
+            footer, playDate, now, pp, fcpp, fcPerformance, fcAccuracy, fcppDisplay
         await osuApi.getUserRecent({u: name, m: '2', a: '1'}).then(async score => {
             let beatmapId = score[0].beatmapId
             await osuApi.getBeatmaps({b: beatmapId, m: '2', a: '1'}).then(async beatmap => {
-                s300 = parseInt(score[0].counts['300']),
-                s100 = parseInt(score[0].counts['100']),
-                s50 = parseInt(score[0].counts['50']),
-                miss = parseInt(score[0].counts['miss']),
-                s50miss = parseInt(score[0].counts['katu']),
-                difficulty = parseFloat(beatmap[0].difficulty.rating),
-                userCombo = parseInt(score[0].maxCombo),
-                approachRate = parseInt(beatmap[0].difficulty.approach),
-                pp = new ctbpp(s300, s100, s50, s50miss, miss, difficulty, userCombo, approachRate, score[0]._mods, beatmapId)
-                fcpp = new ctbpp(s300 + miss, s100, s50, s50miss, 0, difficulty, beatmap[0].maxCombo, approachRate, score[0]._mods, beatmapId)
+                s300 = parseInt(score[0].counts['300'])
+                s100 = parseInt(score[0].counts['100'])
+                s50 = parseInt(score[0].counts['50'])
+                miss = parseInt(score[0].counts['miss'])
+                s50miss = parseInt(score[0].counts['katu'])
+                difficulty = parseFloat(beatmap[0].difficulty.rating)
+                userCombo = parseInt(score[0].maxCombo)
+                approachRate = parseInt(beatmap[0].difficulty.approach)
+                pp = new ctbpp(s300, s100, s50, s50miss, miss, difficulty, userCombo, approachRate, score[0].raw_mods, beatmapId)
+                fcpp = new ctbpp(s300 + miss, s100, s50, s50miss, 0, difficulty, beatmap[0].maxCombo, approachRate, score[0].raw_mods, beatmapId)
 
                 rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
 
@@ -43,7 +43,6 @@ module.exports = {
 
                 await Promise.resolve(fcpp.info).then(function(result) {
                     fcPerformance = result.pp
-                    fcRating = result.rating.substring(0, 4)
                     fcAccuracy = Math.round(result.accuracy * 10000) / 100
                 })
                 
