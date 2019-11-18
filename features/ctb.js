@@ -95,16 +95,17 @@ module.exports = {
                 await osuApi.apiCall('/get_beatmaps?mods='+score[i].raw_mods,{b: score[i].beatmapId, m: '2', a: '1'}).then(async beatmap => {
                     accuracy = Accuracy(score[i].counts['50'], score[i].counts['100'], score[i].counts['300'], score[i].counts['katu'], score[i].counts['miss'])
                     fcpp = new ctbpp(score[i].counts['300'] + score[i].counts['miss'], score[i].counts['100'], score[i].counts['50'], score[i].counts['katu'], 0, beatmap[0].difficultyrating, beatmap[0].maxCombo, beatmap[0].diff_approach, score[i]._mods, beatmap[0].beatmap_id)
-                    rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
+                    rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[i].rank))
 
                     await Promise.resolve(fcpp.info).then(function(result) {
                         fcPerformance = result.pp
                         fcRating = result.rating.substring(0, 4)
                         fcAccuracy = Math.round(result.accuracy * 10000) / 100
                     })
+
                     playDate = moment(score[i].raw_date)
                     now = moment(new Date())
-                    now.subtract(1, 'hours')
+
                     diffObj = moment.duration(now.diff(playDate))
                     yearDiff = diffObj._data.years
                     monthDiff = diffObj._data.months
@@ -134,14 +135,50 @@ module.exports = {
                 })
             }
             osuApi.getUser({u: name, m: '2'}).then(user => {
-                country = user.country
+                description = content
+                author = `Top 5 Catch the Beat! Plays for ${user.name}`
+                flag = `https://osu.ppy.sh//images/flags/${user.country}.png`
+                profile = `https://osu.ppy.sh/users/${user.id}/fruits`
+                thumb = `https://a.ppy.sh/${user.id}`
+                footer = `On osu! Official Server`
+            
                 rich = new Discord.RichEmbed()
-                .setAuthor(`Top 5 Catch the Beat! Plays for ${user.name}`, `https://osu.ppy.sh//images/flags/${country}.png`, `https://osu.ppy.sh/users/${user.id}/fruits`)
-                .setDescription(content)
-                .setThumbnail(`https://a.ppy.sh/${user.id}`)
-                .setFooter('On osu! Official Server')
+                .setAuthor(author, flag, profile)
+                .setDescription(description)
+                .setThumbnail(thumb)
+                .setFooter(footer)
                 message.channel.send(rich)
             })
+        })
+    },
+    async getCtbUser(message, bot, connection, uid) {
+        let name = message.content.split(' ')[1]
+        if(name == undefined) {
+            let userData = await db.getData(connection, uid, 'osu')
+            name = userData.osu_username
+            if(name == null) return message.channel.send(`Please set your osu username or specify user.`)
+        }
+        osuApi.getUser({u: name, m: '2', a: '1'}).then(user => {
+            author = `Catch the Beat! Profile for ${user.name}`
+            flag = `https://osu.ppy.sh//images/flags/${user.country}.png`
+            profile = `https://osu.ppy.sh/users/${user.id}/fruits`
+            level = (parseFloat('0.' + user.level.split('.')[1]) * 100).toFixed(2)
+            footer = `On osu! Official Server`
+            thumb = `https://a.ppy.sh/${user.id}`
+            content = 
+`▸ **Official Rank:** #${user.pp.rank} (CZ#${user.pp.countryRank})
+▸ **Level:** ${user.level} (${level}%)
+▸ **Total PP:** ${user.pp.raw}
+▸ **Hit Accuracy:** ${parseFloat(user.accuracy).toFixed(2)}%
+▸ **Playcount:** ${user.counts['plays']}`
+
+
+            rich = new Discord.RichEmbed()
+            .setThumbnail(thumb)
+            .setAuthor(author, flag, profile)
+            .setDescription(content)
+            .setFooter(footer)
+            message.channel.send(rich)
         })
     }
 }
