@@ -114,7 +114,6 @@ module.exports = {
                     minuteDiff = diffObj._data.minutes
                     secondDiff = diffObj._data.seconds
                     
-                    console.log(diffObj._data)
 
                     yearDiffFin = ''
                     monthDiffFin = ''
