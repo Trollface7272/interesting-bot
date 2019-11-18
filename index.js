@@ -8,7 +8,7 @@ rand = require('./functions/randomInt'),
 nhf = require('./functions/nh.js'),
 nhm = require('./features/nh.js'),
 pref = require('./features/prefix'),
-ctb = require('./features/ctbpp'),
+ctb = require('./features/ctb'),
 osuStuff = require('./functions/getOsuStuff')
 
 var token = require('./token')
@@ -136,6 +136,8 @@ async function getData() {
         if(isNaN(messageContent.split(' ')[1])) return message.channel.send('AR must be a number')
         message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
     }
+    if(messageContent.startsWith(`${prefix}ctbtop`))
+        ctb.getCtbTopPlays(message, bot, connection, discordClientId)
 
 }   
 getData()
