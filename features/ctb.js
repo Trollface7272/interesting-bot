@@ -69,10 +69,10 @@ module.exports = {
 
                 var rich = new Discord.RichEmbed()
                 .setAuthor(title, `https://a.ppy.sh/${score[0].user.id}`, `https://osu.ppy.sh/b/${beatmap[0].id}`)  
-                .setDescription(`
-                    ▸ ${rankingEmoji} ▸ **${(Math.round(performance * 100) / 100).toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
-                    ▸ ${score[0].score} ▸ x${score[0].maxCombo}/${beatmap[0].maxCombo} ▸ [${score[0].counts['300']}/${score[0].counts['100']}/${score[0].counts['50']}/${score[0].counts['miss']}]
-                `)
+                .setDescription(
+`▸ ${rankingEmoji} ▸ **${(Math.round(performance * 100) / 100).toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
+▸ ${score[0].score} ▸ x${score[0].maxCombo}/${beatmap[0].maxCombo} ▸ [${score[0].counts['300']}/${score[0].counts['100']}/${score[0].counts['50']}/${score[0].counts['miss']}]`
+                    )
                 .setThumbnail(`https://b.ppy.sh/thumb/${beatmap[0].beatmapSetId}.jpg`)
                 .setFooter(footer)
                 message.channel.send(`**Most Recent Catch the Beat! Play for ${name}:**`, rich)
@@ -114,13 +114,6 @@ module.exports = {
                     minuteDiff = diffObj._data.minutes
                     secondDiff = diffObj._data.seconds
                     
-
-                    yearDiffFin = ''
-                    monthDiffFin = ''
-                    dayDiffFin = ''
-                    hourDiffFin = ''
-                    minuteDiffFin = ''
-                    secondDiffFin = ''
                     diffAr = []
 
                     if(yearDiff > 0) yearDiffFin = diffAr[diffAr.length] = yearDiff + ' Years '
@@ -146,7 +139,7 @@ module.exports = {
                 rich = new Discord.RichEmbed()
                 .setAuthor(`Top 5 Catch the Beat! Plays for ${user.name}`, `https://osu.ppy.sh//images/flags/${country}.png`, `https://osu.ppy.sh/users/${user.id}/fruits`)
                 .setDescription(content)
-                .setThumbnail(`https://a.ppy.sh/8398988${user.id}`)
+                .setThumbnail(`https://a.ppy.sh/${user.id}`)
                 .setFooter('On osu! Official Server')
                 message.channel.send(rich)
             })
