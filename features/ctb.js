@@ -89,23 +89,31 @@ module.exports = {
         }
         await osuApi.getUserBest({u: name, m: '2', a: '1'}).then(async score => {
             
-            var title, content, rich, country, j, fcPerformance, fcRating, fcAccuracy, rankingEmoji, accuracy
-            j = 1
-            content = ''
+            var rich, country, fcPerformance, fcAccuracy, rankingEmoji, accuracy, now, playDate,
+            j = 1,
+            content = '',
+            diffAr = []
             for(i = 0; i < 5; i++) {
                 await osuApi.apiCall('/get_beatmaps?mods='+score[i].raw_mods,{b: score[i].beatmapId, m: '2', a: '1'}).then(async beatmap => {
+                    //Get play accuracy 
                     accuracy = Accuracy(score[i].counts['50'], score[i].counts['100'], score[i].counts['300'], score[i].counts['katu'], score[i].counts['miss'])
+                    
+                    //Get Promise with data for fc
                     fcpp = new ctbpp(score[i].counts['300'] + score[i].counts['miss'], score[i].counts['100'], score[i].counts['50'], score[i].counts['katu'], 0, beatmap[0].difficultyrating, beatmap[0].maxCombo, beatmap[0].diff_approach, score[i]._mods, beatmap[0].beatmap_id)
+                    
+                    //Get emojis for play performance (X, XH, S, SH...)
                     rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
 
+                    //Resolve Promise and get values for fc
                     await Promise.resolve(fcpp.info).then(function(result) {
                         fcPerformance = result.pp
-                        fcRating = result.rating.substring(0, 4)
                         fcAccuracy = Math.round(result.accuracy * 10000) / 100
                     })
-                    playDate = moment(score[i].raw_date)
-                    now = moment(new Date())
-                    now.subtract(1, 'hours')
+                    
+                    playDate = moment(score[i].raw_date) //Date the play was set
+                    now = moment(new Date())             //Local time
+                    
+                    //Difference in dates
                     diffObj = moment.duration(now.diff(playDate))
                     yearDiff = diffObj._data.years
                     monthDiff = diffObj._data.months
@@ -113,26 +121,23 @@ module.exports = {
                     hourDiff = diffObj._data.hours
                     minuteDiff = diffObj._data.minutes
                     secondDiff = diffObj._data.seconds
-                    
 
-                    yearDiffFin = ''
-                    monthDiffFin = ''
-                    dayDiffFin = ''
-                    hourDiffFin = ''
-                    minuteDiffFin = ''
-                    secondDiffFin = ''
-                    diffAr = []
-
+                    //Fill array with values that are > 0 
                     if(yearDiff > 0) yearDiffFin = diffAr[diffAr.length] = yearDiff + ' Years '
                     if(monthDiff > 0) diffAr[diffAr.length] = ' Months '
                     if(dayDiff > 0) diffAr[diffAr.length] = dayDiff + ' Days '
                     if(hourDiff > 0) diffAr[diffAr.length] = hourDiff + ' Hours '
                     if(minuteDiff > 0) diffAr[diffAr.length] = minuteDiff + ' Minutes '
                     if(secondDiff > 0) diffAr[diffAr.length] = secondDiff + ' Seconds '
+
+                    //Use first 2 values in time display
                     diffFin = diffAr[0] + diffAr[1]
                     
+                    //Display pp for fc only when play contains miss / has 5% lower combo then max combo
                     if(score[i].counts.miss > 0 || score[i].maxCombo < beatmap[0].maxCombo - beatmap[0].maxCombo * 0.05) fcppDisplay = `(${(Math.round(fcPerformance * 100) / 100).toFixed(2)}PP for ${fcAccuracy}% FC) `
                     else fcppDisplay = ''
+                    
+                    //Content of Rich Embed
                     content += 
                         `**${j}. [${beatmap[0].title} [${beatmap[0].version}]](https://osu.ppy.sh/beatmapsets/${beatmap[0].beatmapset_id}#fruits/${beatmap[0].beatmap_id}) +${osuStuff.getMods(osuStuff.getModsFromRaw(score[i].raw_mods))}** [${parseFloat(beatmap[0].difficultyrating).toFixed(2)}★]
                         ▸ ${rankingEmoji} ▸ **${(Math.round(score[i].pp * 100) / 100).toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
