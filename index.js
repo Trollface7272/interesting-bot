@@ -139,6 +139,10 @@ async function getData() {
     if(messageContent.startsWith(`${prefix}ctbtop`))
         ctb.getCtbTopPlays(message, bot, connection, discordClientId)
 
+    if(messageContent.startsWith(`${prefix}ctb`) && !(messageContent.startsWith(`${prefix}ctbtop`)) && !(messageContent.startsWith(`${prefix}ctbrs`))) 
+        ctb.getCtbUser(message, bot, connection, discordClientId)
+    
+
 }   
 getData()
 })
