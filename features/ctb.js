@@ -17,62 +17,75 @@ module.exports = {
             name = userData.osu_username
             if(name == null) return message.channel.send(`Please set your osu username or specify user.`)
         }
-        var rating, performance, title, accuracy, s300, s100, s50, miss, s50miss, difficulty, userCombo, approachRate, retries, 
-            footer, playDate, now, pp, fcpp, fcPerformance, fcAccuracy, fcppDisplay
+
         await osuApi.getUserRecent({u: name, m: '2', a: '1'}).then(async score => {
             let beatmapId = score[0].beatmapId
+            db.update(connection, 'servers', message.guild.id, {last_map_id: beatmapId, last_map_game_mod: 2})
             await osuApi.getBeatmaps({b: beatmapId, m: '2', a: '1'}).then(async beatmap => {
-                s300 = parseInt(score[0].counts['300'])
-                s100 = parseInt(score[0].counts['100'])
-                s50 = parseInt(score[0].counts['50'])
-                miss = parseInt(score[0].counts['miss'])
-                s50miss = parseInt(score[0].counts['katu'])
-                difficulty = parseFloat(beatmap[0].difficulty.rating)
-                userCombo = parseInt(score[0].maxCombo)
-                approachRate = parseInt(beatmap[0].difficulty.approach)
-                pp = new ctbpp(s300, s100, s50, s50miss, miss, difficulty, userCombo, approachRate, score[0].raw_mods, beatmapId)
+                //Counts
+                let s300 = parseInt(score[0].counts['300']),
+                s100 = parseInt(score[0].counts['100']),
+                s50 = parseInt(score[0].counts['50']),
+                miss = parseInt(score[0].counts['miss']),
+                s50miss = parseInt(score[0].counts['katu']),
+                userCombo = parseInt(score[0].maxCombo),
+                approachRate = parseInt(beatmap[0].difficulty.approach),
+                difficulty = parseFloat(beatmap[0].difficulty.rating),
+                pp = new ctbpp(s300, s100, s50, s50miss, miss, difficulty, userCombo, approachRate, score[0].raw_mods, beatmapId),
                 fcpp = new ctbpp(s300 + miss, s100, s50, s50miss, 0, difficulty, beatmap[0].maxCombo, approachRate, score[0].raw_mods, beatmapId)
 
-                rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
+                let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
 
+                var performance, rating, accuracy
                 await Promise.resolve(pp.info).then(function(result) {
                     performance = result.pp
                     rating = result.rating.substring(0, 4)
                     accuracy = Math.round(result.accuracy * 10000) / 100
                 })
 
+                var fcPerformance, fcAccuracy
                 await Promise.resolve(fcpp.info).then(function(result) {
                     fcPerformance = result.pp
                     fcAccuracy = Math.round(result.accuracy * 10000) / 100
                 })
-                
+
+                var fcppDisplay
                 if(score[0].counts.miss > 0 || score[0].maxCombo < beatmap[0].maxCombo - beatmap[0].maxCombo * 0.05) fcppDisplay = `(${(Math.round(fcPerformance * 100) / 100).toFixed(2)}PP for ${fcAccuracy}% FC) `
                 else fcppDisplay = ''
-                playDate = moment(score[0].raw_date)
-                now = moment(new Date())
-                hourDiff = now.diff(playDate, 'hours')
-                minuteDiff = now.diff(playDate, 'minutes')
-                secondDiff = now.diff(playDate, 'seconds')
-                hourDiffFin = ''
-                minuteDiffFin = ''
-                secondDiffFin = ''
 
-                retries = osuStuff.getAmmountOfRetries(score)
+                let playDate = moment(score[0].raw_date)
+                let now = moment(new Date())
+                let hourDiff = now.diff(playDate, 'hours')
+                let minuteDiff = now.diff(playDate, 'minutes')
+                let secondDiff = now.diff(playDate, 'seconds')
+                let hourDiffFin = ''
+                let minuteDiffFin = ''
+                let secondDiffFin = ''
+
+                let retries = osuStuff.getAmmountOfRetries(score)
                 if(hourDiff > 0) hourDiffFin = hourDiff + ' Hours '
                 else if(minuteDiff > 0 || hourDiff > 0) minuteDiffFin = minuteDiff % 60 + ' Minutes '
                 else if(secondDiff > 0 || minuteDiff > 0 && hourDiff <  0 ) secondDiffFin = secondDiff % 60 + ' Seconds'
-                diffFin = hourDiffFin + minuteDiffFin + secondDiffFin
-                footer =`Try #${retries} | ${diffFin} Seconds On osu! Official Server`
-                
-                title = `${beatmap[0].title} [${beatmap[0].version}] +${osuStuff.getMods(osuStuff.getModsFromRaw(score[0].raw_mods))} [${rating}★]`
+                let diffFin = hourDiffFin + minuteDiffFin + secondDiffFin
 
-                var rich = new Discord.RichEmbed()
-                .setAuthor(title, `https://a.ppy.sh/${score[0].user.id}`, `https://osu.ppy.sh/b/${beatmap[0].id}`)  
-                .setDescription(
+
+                let footer =`Try #${retries} | ${diffFin} Seconds On osu! Official Server`
+                
+                //Title
+                let title = `${beatmap[0].title} [${beatmap[0].version}] +${osuStuff.getMods(osuStuff.getModsFromRaw(score[0].raw_mods))} [${rating}★]`
+                let userPicture = `https://a.ppy.sh/${score[0].user.id}`
+                let beatmapLink = `https://osu.ppy.sh/b/${beatmap[0].id}`
+
+                let description = 
 `▸ ${rankingEmoji} ▸ **${(Math.round(performance * 100) / 100).toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
 ▸ ${score[0].score} ▸ x${score[0].maxCombo}/${beatmap[0].maxCombo} ▸ [${score[0].counts['300']}/${score[0].counts['100']}/${score[0].counts['50']}/${score[0].counts['miss']}]`
-                    )
-                .setThumbnail(`https://b.ppy.sh/thumb/${beatmap[0].beatmapSetId}.jpg`)
+       
+                let thumbnail = `https://b.ppy.sh/thumb/${beatmap[0].beatmapSetId}.jpg`
+
+                var rich = new Discord.RichEmbed()
+                .setAuthor(title, userPicture, beatmapLink)  
+                .setDescription(description)
+                .setThumbnail(thumbnail)
                 .setFooter(footer)
                 message.channel.send(`**Most Recent Catch the Beat! Play for ${name}:**`, rich)
             })
@@ -87,7 +100,7 @@ module.exports = {
             if(name == null) return message.channel.send(`Please set your osu username or specify user.`)
         }
         await osuApi.getUserBest({u: name, m: '2', a: '1'}).then(async score => {
-            
+            db.update(connection, 'servers', message.guild.id, {last_map_id: score[0].beatmapId, last_map_game_mod: 2})            
             var rich, country, fcPerformance, fcAccuracy, rankingEmoji, accuracy, now, playDate,
             j = 1,
             content = '',
@@ -193,7 +206,6 @@ module.exports = {
         })
     }
 }
-
 function Accuracy(num50, num100, num300, num50Miss, numMiss) {
     return (((parseInt(num50) + parseInt(num100) + parseInt(num300)) / (parseInt(num50) + parseInt(num100) + parseInt(num300) + parseInt(num50Miss) + parseInt(numMiss))) * 100).toFixed(2)
 }

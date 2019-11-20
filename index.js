@@ -137,7 +137,7 @@ async function getData() {
         message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
     }
     if(messageContent.startsWith(`${prefix}ctbtop`))
-        ctb.getCtbTopPlays(message, bot, connection, discordClientId)
+        ctb.getCtbTopPlays(message, bot, connection, discordClientId )
 
     if(messageContent.startsWith(`${prefix}ctb`) && !(messageContent.startsWith(`${prefix}ctbtop`)) && !(messageContent.startsWith(`${prefix}ctbrs`))) 
         ctb.getCtbUser(message, bot, connection, discordClientId)
