@@ -34,7 +34,7 @@ module.exports = {
                 difficulty = parseFloat(beatmap[0].difficulty.rating),
 
                 pp = new ctbpp(s300, s100, s50, s50miss, miss, difficulty, userCombo, approachRate, score[0].raw_mods, beatmapId)
-                console.log(await pp.info)
+                
                 //Emoji as Play Mark
                 let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
 
@@ -89,7 +89,7 @@ module.exports = {
                 
                 //Title
                 let title = `${beatmap[0].title} [${beatmap[0].version}] +${osuStuff.getMods(osuStuff.getModsFromRaw(score[0].raw_mods))} [${rating}★]`
-                console.log(osuStuff.getModsFromRaw(score[0].raw_mods))
+                
                 //User Picture
                 let userPicture = `https://a.ppy.sh/${score[0].user.id}`
 
