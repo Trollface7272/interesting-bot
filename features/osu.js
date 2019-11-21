@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const ctbpp = require("../Custom Library/ctbpp")
+const ctbpp = require("../Custom Library/CtbCalc")
 const osu = require("node-osu")
 const osuStuff = require("../functions/getOsuStuff")
 const moment = require('moment')
