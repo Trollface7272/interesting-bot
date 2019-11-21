@@ -3,7 +3,7 @@ module.exports = {
         let result = ''
         rawMods.forEach(mod => {
             if(mod == 'Easy') result += 'EZ' 
-            if(mod == 'No-Fail') result += 'NF'
+            if(mod == 'NoFail') result += 'NF'
             if(mod == 'HalfTime') result += 'HT'
             if(mod == 'HardRock') result += 'HR'
             if(mod == 'SuddenDeath') result += 'SD'
