@@ -139,19 +139,34 @@ module.exports = {
             content = '',
             diffAr = []
             for(i = 0; i < 5; i++) {
-                await osuApi.apiCall('/get_beatmaps?mods='+score[i].raw_mods,{b: score[i].beatmapId, m: '2', a: '1'}).then(async beatmap => {
+                var mods = score[i].raw_mods
+                var modsByNames = osuStuff.getModsFromRaw(mods)
+                if(modsByNames.includes('NoFail')) mods -= 1
+                if(modsByNames.includes('Hidden')) mods -= 8
+                if(modsByNames.includes('SuddenDeath')) mods -= 32
+                if(modsByNames.includes('Flashlight')) mods -= 1024
+                if(modsByNames.includes('Perfect')) mods -= 16416
+
+                await osuApi.apiCall('/get_beatmaps?mods='+mods,{b: score[i].beatmapId, m: '2', a: '1'}).then(async beatmap => {
+                    //Define Ammounts of Hitted Objects and parseInt it
+                    var h300 = parseInt(score[i].counts['300']),
+                    h100 = parseInt(score[i].counts['100']),
+                    h50 = parseInt(score[i].counts['50']),
+                    h50Miss = parseInt(score[i].counts['katu']),
+                    hMiss = parseInt(score[i].counts['miss'])
+                    
                     //Get play accuracy 
-                    let accuracy = Accuracy(score[i].counts['50'], score[i].counts['100'], score[i].counts['300'], score[i].counts['katu'], score[i].counts['miss'])
+                    let accuracy = Accuracy(h50, h100, h300, h50Miss, hMiss)
                     
                     //Get fc Data
-                    let fcpp = new ctbpp(score[i].counts['300'] + score[i].counts['miss'], score[i].counts['100'], score[i].counts['50'], score[i].counts['katu'], 0, beatmap[0].difficultyrating, beatmap[0].maxCombo, beatmap[0].diff_approach, score[i]._mods, beatmap[0].beatmap_id)
+                    let fcpp = new ctbpp(h300, h100, h50, h50Miss, hMiss, beatmap[0].difficultyrating, beatmap[0].maxCombo, beatmap[0].diff_approach, score[i].raw_mods, beatmap[0].beatmap_id)
                     
                     //Get emojis for play performance (X, XH, S, SH...)
                     let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
 
                     //Get fc Values
                     let fcPerformance, fcAccuracy
-                    await Promise.resolve(fcpp.info).then(function(result) {
+                    await Promise.resolve(fcpp.fcinfo).then(function(result) {
                         fcPerformance = result.pp
                         fcAccuracy = Math.round(result.accuracy * 10000) / 100
                     })

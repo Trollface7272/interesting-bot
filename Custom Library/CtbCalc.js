@@ -35,7 +35,9 @@ class ctbCalc {
 
         if(modsByNames.includes('NoFail')) mods -= 1
         if(modsByNames.includes('Hidden')) mods -= 8
+        if(modsByNames.includes('SuddenDeath')) mods -= 32
         if(modsByNames.includes('Flashlight')) mods -= 1024
+        if(modsByNames.includes('Perfect')) mods -= 16416
 
 
         if(!fc) {
