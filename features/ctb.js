@@ -85,7 +85,7 @@ module.exports = {
                 
 
                 //Footer
-                let footer =`Try #${retries} | ${diffFin}Seconds On osu! Official Server`
+                let footer =`Try #${retries} | ${diffFin}On osu! Official Server`
                 
                 //Title
                 let title = `${beatmap[0].title} [${beatmap[0].version}] +${osuStuff.getMods(osuStuff.getModsFromRaw(score[0].raw_mods))} [${rating}★]`
@@ -173,7 +173,7 @@ module.exports = {
 
                     //Use first 2 values in time display
                     diffFin = diffAr[0] + diffAr[1]
-                    
+
                     //Display pp for fc only when play contains miss / has 5% lower combo then max combo
                     if(score[i].counts.miss > 0 || score[i].maxCombo < beatmap[0].maxCombo - beatmap[0].maxCombo * 0.05) fcppDisplay = `(${(Math.round(fcPerformance * 100) / 100).toFixed(2)}PP for ${fcAccuracy}% FC) `
                     else fcppDisplay = ''
