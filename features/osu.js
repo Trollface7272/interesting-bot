@@ -69,7 +69,7 @@ module.exports = {
                 let userPicture = `https://a.ppy.sh/${score[0].user.id}`
                 let beatmapLink = `https://osu.ppy.sh/b/${beatmapId}`
                 let description = 
-`**1. \`${mods}\`** [${}]
+`**1. \`${mods}\`** []
 ▸ ${rankingEmoji} ▸ **${performance.toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
 ▸ ${score[0].score} ▸ x${gainedCombo}/${maxCombo} ▸ [${counts['300']}/${counts['100']}/${counts['50']}/${counts['miss']}]`
                 
