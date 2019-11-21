@@ -9,7 +9,8 @@ nhf = require('./functions/nh.js'),
 nhm = require('./features/nh.js'),
 pref = require('./features/prefix'),
 ctb = require('./features/ctb'),
-osuStuff = require('./functions/getOsuStuff')
+osuStuff = require('./functions/getOsuStuff'),
+osu = require('./features/osu')
 
 var token = require('./token')
 token = token.token
@@ -142,6 +143,8 @@ async function getData() {
     if(messageContent.startsWith(`${prefix}ctb`) && !(messageContent.startsWith(`${prefix}ctbtop`)) && !(messageContent.startsWith(`${prefix}ctbrs`))) 
         ctb.getCtbUser(message, bot, connection, discordClientId)
     
+    if(messageContent.split(' ')[0] == `${prefix}c` || messageContent.split(' ')[0] == `${prefix}compare`)
+        osu.compare(message, bot, connection, discordClientId)
 
 }   
 getData()

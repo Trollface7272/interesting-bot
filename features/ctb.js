@@ -114,7 +114,7 @@ module.exports = {
                     fcpp = new ctbpp(score[i].counts['300'] + score[i].counts['miss'], score[i].counts['100'], score[i].counts['50'], score[i].counts['katu'], 0, beatmap[0].difficultyrating, beatmap[0].maxCombo, beatmap[0].diff_approach, score[i]._mods, beatmap[0].beatmap_id)
                     
                     //Get emojis for play performance (X, XH, S, SH...)
-                    rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
+                    rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[i].rank))
 
                     //Resolve Promise and get values for fc
                     await Promise.resolve(fcpp.info).then(function(result) {
@@ -154,7 +154,7 @@ module.exports = {
 `**${j}. [${beatmap[0].title} [${beatmap[0].version}]](https://osu.ppy.sh/beatmapsets/${beatmap[0].beatmapset_id}#fruits/${beatmap[0].beatmap_id}) +${osuStuff.getMods(osuStuff.getModsFromRaw(score[i].raw_mods))}** [${parseFloat(beatmap[0].difficultyrating).toFixed(2)}★]
 ▸ ${rankingEmoji} ▸ **${(Math.round(score[i].pp * 100) / 100).toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
 ▸ ${score[i].score} ▸ x${score[i].maxCombo}/${beatmap[0].max_combo} ▸ [${score[i].counts['300']}/${score[i].counts['100']}/${score[i].counts['50']}/${score[i].counts['miss']}]
-▸Score Set ${diffFin}Ago \n`
+▸ Score Set ${diffFin}Ago \n`
                     j++
                 })
             }
