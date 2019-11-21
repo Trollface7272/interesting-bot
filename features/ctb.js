@@ -114,7 +114,12 @@ module.exports = {
                 //Send The Rich Embed
                 message.channel.send(`**Most Recent Catch the Beat! Play for ${name}:**`, rich)
             })
+        }).catch(function(error) {
+            if(error == 'Error: No scores') message.channel.send(`\`${name}\` was not found or no recent plays in \`Catch the Beat!\`.`)
+            else throw error
         })
+            
+        
         
     },
     async getCtbTopPlays(message, bot, connection, uid) {
