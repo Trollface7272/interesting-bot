@@ -28,52 +28,56 @@ module.exports = {
         if(beatmapId == null || gamemod == null) return message.channel.send('So scores found in chat.')
 
         await osuApi.getScores({u: name, b: beatmapId, m: gamemod, a: converts}).then(async score => {
+            var description = ''
+            let plays = (score.length > 3) ? 3 : score.length
             await osuApi.getBeatmaps({b: beatmapId, m: gamemod, a: converts}).then(async beatmap => {
-                var counts = score[0].counts
-                let gainedCombo = score[0].maxCombo
-                let maxCombo = beatmap[0].maxCombo
-                var accuracy
-                var fcPerformence
-                var fcAccuracy
-                if(gamemod == 0) {
+                for(i = 0; i < plays; i++) {
+                    var counts = score[i].counts
+                    let gainedCombo = score[i].maxCombo
+                    let maxCombo = beatmap[0].maxCombo
+                    var accuracy
+                    var fcPerformence
+                    var fcAccuracy
+                    var rating
+                    if(gamemod == 0) {
 
-                }
-                if(gamemod == 1) {
+                    }
+                    if(gamemod == 1) {
 
-                }
-                if(gamemod == 2) {
-                    await osuApi.apiCall('/get_beatmaps?mods='+score[0].raw_mods,{b: beatmapId, m: '2', a: '1'}).then(async beatmap1 => {
-                        fcpp =  new ctbpp(counts['300'] + counts['miss'], counts['100'], counts['50'], counts['katu'], 0, beatmap1[0].difficultyrating, gainedCombo, beatmap[0].difficulty.approach, score[0].raw_mods, beatmapId)
-                        
-                        await Promise.resolve(fcpp.info).then(function(result){
-                            fcPerformence = result.pp
-                            fcAccuracy = Math.round(result.accuracy * 10000) / 100
+                    }
+                    if(gamemod == 2) {
+                        await osuApi.apiCall('/get_beatmaps?mods='+score[i].raw_mods,{b: beatmapId, m: '2', a: '1'}).then(async beatmap1 => {
+                            fcpp =  new ctbpp(counts['300'] + counts['miss'], counts['100'], counts['50'], counts['katu'], 0, beatmap1[0].difficultyrating, gainedCombo, beatmap[0].difficulty.approach, score[i].raw_mods, beatmapId)
+                            
+                            await Promise.resolve(fcpp.info).then(function(result){
+                                fcPerformence = result.pp
+                                fcAccuracy = Math.round(result.accuracy * 10000) / 100
+                                rating = result.rating
+                            })
                         })
-                    })
-                    let totalHits = parseInt(counts['50']) + parseInt(counts['100']) + parseInt(counts['300']) + parseInt(counts['katu']) + parseInt(counts['miss'])
-                    let hits = parseInt(counts['50']) + parseInt(counts['100']) + parseInt(counts['300'])
-                    accuracy = ((hits / totalHits) * 100).toFixed(2)
-                }
-                if(gamemod == 3) {
+                        let totalHits = parseInt(counts['50']) + parseInt(counts['100']) + parseInt(counts['300']) + parseInt(counts['katu']) + parseInt(counts['miss'])
+                        let hits = parseInt(counts['50']) + parseInt(counts['100']) + parseInt(counts['300'])
+                        accuracy = ((hits / totalHits) * 100).toFixed(2)
+                    }
+                    if(gamemod == 3) {
 
-                }
-                if(score[0].counts.miss > 0 || gainedCombo < maxCombo - maxCombo * 0.05) fcppDisplay = `(${(Math.round(fcPerformance * 100) / 100).toFixed(2)}PP for ${fcAccuracy}% FC) `
-                else fcppDisplay = ''
-                let beatmapName = beatmap[0].title
-                let diffName = beatmap[0].version
-                let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
-                let performance = parseInt(score[0].pp)
-                let mods = osuStuff.getMods(osuStuff.getModsFromRaw(score[0].raw_mods))
+                    }
+                    fcppDisplay = (score[0].counts.miss > 0 || gainedCombo < maxCombo - maxCombo * 0.05) ? `(${(Math.round(fcPerformence * 100) / 100).toFixed(2)}PP for ${fcAccuracy}% FC) ` : ''
 
-                let author = `Top osu! ${mod} Plays for Trollface on ${beatmapName} [${diffName}]`
-                let userPicture = `https://a.ppy.sh/${score[0].user.id}`
-                let beatmapLink = `https://osu.ppy.sh/b/${beatmapId}`
-                let description = 
-`**1. \`${mods}\`** []
-▸ ${rankingEmoji} ▸ **${performance.toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
-▸ ${score[0].score} ▸ x${gainedCombo}/${maxCombo} ▸ [${counts['300']}/${counts['100']}/${counts['50']}/${counts['miss']}]`
-                
-    
+                    let beatmapName = beatmap[0].title
+                    let diffName = beatmap[0].version
+                    let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
+                    let performance = parseInt(score[i].pp)
+                    let mods = osuStuff.getMods(osuStuff.getModsFromRaw(score[i].raw_mods))
+
+                    var author = `Top osu! ${mod} Plays for Trollface on ${beatmapName} [${diffName}]`
+                    var userPicture = `https://a.ppy.sh/${score[i].user.id}`
+                    var beatmapLink = `https://osu.ppy.sh/b/${beatmapId}`
+                    description += 
+    `**${i+1}. \`${mods}\` Score** [${rating}★]
+    ▸ ${rankingEmoji} ▸ **${performance.toFixed(2)}PP** ${fcppDisplay}▸ ${accuracy}%
+    ▸ ${score[0].score} ▸ x${gainedCombo}/${maxCombo} ▸ [${counts['300']}/${counts['100']}/${counts['50']}/${counts['miss']}]\n`
+                }
                 var rich = new Discord.RichEmbed()
                 .setAuthor(author, userPicture, beatmapLink)
                 .setDescription(description)
