@@ -242,7 +242,7 @@ module.exports = {
             let footer = `On osu! Official Server`
             let thumb = `https://a.ppy.sh/${user.id}`
             let content = 
-`▸ **Official Rank:** #${user.pp.rank} (CZ#${user.pp.countryRank})
+`▸ **Official Rank:** #${user.pp.rank} (${user.country}#${user.pp.countryRank})
 ▸ **Level:** ${user.level} (${level}%)
 ▸ **Total PP:** ${user.pp.raw}
 ▸ **Hit Accuracy:** ${parseFloat(user.accuracy).toFixed(2)}%
