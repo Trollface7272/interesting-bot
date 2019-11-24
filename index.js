@@ -124,23 +124,23 @@ async function getData() {
         db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1})
     }
 
-    if(messageContent.split('')[0] === `${prefix}ctbrs`)
+    if(messageContent.split(' ')[0] === `${prefix}ctbrs`)
         ctb.getCtbpp(message, bot, connection, discordClientId)
 
-    if(messageContent.split('')[0] === `${prefix}osuset user`) {
+    if(messageContent.split(' ')[0] === `${prefix}osuset user`) {
         let osuUsername = message.content.split(' ')[2]
         db.update(connection, 'osu', discordClientId, {osu_username: osuUsername})
         message.channel.send(`Your osu! username has been set to \`${osuUsername}\``)
     }
-    if(messageContent.split('')[0] === `${prefix}dtar`) {
+    if(messageContent.split(' ')[0] === `${prefix}dtar`) {
         if(messageContent.split(' ')[1] == undefined) return message.channel.send('Specify AR')
         if(isNaN(messageContent.split(' ')[1])) return message.channel.send('AR must be a number')
         message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
     }
-    if(messageContent.split('')[0] === `${prefix}ctbtop`)
+    if(messageContent.split(' ')[0] === `${prefix}ctbtop`)
         ctb.getCtbTopPlays(message, bot, connection, discordClientId )
 
-    if(messageContent.split('')[0] === `${prefix}ctb`)
+    if(messageContent.split(' ')[0] === `${prefix}ctb`)
         ctb.getCtbUser(message, bot, connection, discordClientId)
     
     if(messageContent.split(' ')[0] == `${prefix}c` || messageContent.split(' ')[0] == `${prefix}compare`)
