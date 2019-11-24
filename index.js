@@ -128,7 +128,7 @@ async function getData() {
         ctb.getCtbpp(message, bot, connection, discordClientId)
 
     if(messageContent.startsWith(`${prefix}osuset user`)) {
-        let osuUsername = messageContent.split(' ')[2]
+        let osuUsername = message.content.split(' ')[2]
         db.update(connection, 'osu', discordClientId, {osu_username: osuUsername})
         message.channel.send(`Your osu! username has been set to \`${osuUsername}\``)
     }

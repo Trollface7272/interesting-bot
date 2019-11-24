@@ -128,6 +128,9 @@ async function compareF(connection, message, uid, bot, playsLimiter, edit, botMs
             else if(edit) editMsg(rich, botMsg)
             
         })
+    }).catch(function(error) {
+        if(error == 'Error: No scores') message.channel.send(`${name} was not found or no scores on the map.`)
+        else throw error
     })
 }
 function send(rich, msg, bot, connection, uid, playsLimiter, scoreLength, botMsg) {
