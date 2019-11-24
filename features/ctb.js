@@ -71,7 +71,7 @@ module.exports = {
 
                 //Fill diffAr if difference > 0
                 if(yearDiff > 0) yearDiffFin = diffAr[diffAr.length] = yearDiff + ' Years '
-                if(monthDiff > 0) diffAr[diffAr.length] = ' Months '
+                if(monthDiff > 0) diffAr[diffAr.length] = monthDiff + ' Months '
                 if(dayDiff > 0) diffAr[diffAr.length] = dayDiff + ' Days '
                 if(hourDiff > 0) diffAr[diffAr.length] = hourDiff + ' Hours '
                 if(minuteDiff > 0) diffAr[diffAr.length] = minuteDiff + ' Minutes '
@@ -185,7 +185,7 @@ module.exports = {
 
                     //Fill array with values that are > 0 
                     if(yearDiff > 0) yearDiffFin = diffAr[diffAr.length] = yearDiff + ' Years '
-                    if(monthDiff > 0) diffAr[diffAr.length] = ' Months '
+                    if(monthDiff > 0) diffAr[diffAr.length] = monthDiff + ' Months '
                     if(dayDiff > 0) diffAr[diffAr.length] = dayDiff + ' Days '
                     if(hourDiff > 0) diffAr[diffAr.length] = hourDiff + ' Hours '
                     if(minuteDiff > 0) diffAr[diffAr.length] = minuteDiff + ' Minutes '
