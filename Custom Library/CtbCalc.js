@@ -20,15 +20,7 @@ class ctbCalc {
         this.fcinfo = this.getInfo(true)
     }
     async getInfo(fc) {
-        var approachRate = this.approachRate,
-        mods = this.mods,
-        beatmapId = this.beatmapId,
-        rating = this.rating,
-        num100 = this.num100,
-        num50 = this.num50,
-        num50Miss = this.num50Miss
-
-        var modsByNames = getModsFromRaw(mods)
+    var modsByNames = getModsFromRaw(mods)
     let HD = modsByNames.includes('Hidden') ? true : false,
         FL = modsByNames.includes('Flashlight') ? true : false,
         NF = modsByNames.includes('NoFail') ? true : false

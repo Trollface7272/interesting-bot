@@ -192,7 +192,7 @@ module.exports = {
                     if(secondDiff > 0) diffAr[diffAr.length] = secondDiff + ' Seconds '
 
                     //Use first 2 values in time display
-                    diffFin = diffAr[0] + diffAr[1]
+                    diffFin = diffAr[1] === undefined ? diffAr[0] : diffAr[0] + diffAr[1]
 
                     //Display pp for fc only when play contains miss / has 5% lower combo then max combo
                     if(score[i].counts.miss > 0 || score[i].maxCombo < beatmap[0].maxCombo - beatmap[0].maxCombo * 0.05) fcppDisplay = `(${(Math.round(fcPerformance * 100) / 100).toFixed(2)}PP for ${fcAccuracy}% FC) `
