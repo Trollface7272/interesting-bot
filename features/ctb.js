@@ -78,7 +78,7 @@ module.exports = {
                 if(secondDiff > 0) diffAr[diffAr.length] = secondDiff + ' Seconds '
 
                 //Put 2 diffs into 1 final var
-                let diffFin = diffAr[0] + diffAr[1]
+                let diffFin = diffAr[1] === undefined ? diffAr[0] + diffAr[1] : diffAr[0]
 
                 //Get retries
                 let retries = osuStuff.getAmmountOfRetries(score)
