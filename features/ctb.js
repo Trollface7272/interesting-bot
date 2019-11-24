@@ -162,7 +162,7 @@ module.exports = {
                     let fcpp = new ctbpp(h300, h100, h50, h50Miss, hMiss, beatmap[0].difficultyrating, beatmap[0].maxCombo, beatmap[0].diff_approach, score[i].raw_mods, beatmap[0].beatmap_id)
                     
                     //Get emojis for play performance (X, XH, S, SH...)
-                    let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[0].rank))
+                    let rankingEmoji = bot.emojis.get(osuStuff.getRankingEmote(score[i].rank))
 
                     //Get fc Values
                     let fcPerformance, fcAccuracy
