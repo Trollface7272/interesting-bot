@@ -40,7 +40,7 @@ function handleDisconnect() {
     })
 
     connection.on('error', function(err) {
-    if(err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED') {
+    if(err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED' || err.code === 'ECONNRESET') {
         handleDisconnect()
     } else {
         throw err
@@ -124,10 +124,10 @@ async function getData() {
         db.update(connection, 'users', discordClientId, {nwords: userData.nwords+1})
     }
 
-    if(messageContent.startsWith(`${prefix}ctbrs`))
+    if(messageContent.startsWith(`${prefix}ctbrs `))
         ctb.getCtbpp(message, bot, connection, discordClientId)
 
-    if(messageContent.startsWith(`${prefix}osuset user`)) {
+    if(messageContent.startsWith(`${prefix}osuset user `)) {
         let osuUsername = message.content.split(' ')[2]
         db.update(connection, 'osu', discordClientId, {osu_username: osuUsername})
         message.channel.send(`Your osu! username has been set to \`${osuUsername}\``)
@@ -137,13 +137,13 @@ async function getData() {
         if(isNaN(messageContent.split(' ')[1])) return message.channel.send('AR must be a number')
         message.channel.send(`Approach rate with DoubleTime for AR ${messageContent.split(' ')[1]} is ${osuStuff.getDtAr(messageContent.split(' ')[1])}`)
     }
-    if(messageContent.startsWith(`${prefix}ctbtop`))
+    if(messageContent.startsWith(`${prefix}ctbtop `))
         ctb.getCtbTopPlays(message, bot, connection, discordClientId )
 
-    if(messageContent.startsWith(`${prefix}ctb`) && !(messageContent.startsWith(`${prefix}ctbtop`)) && !(messageContent.startsWith(`${prefix}ctbrs`))) 
+    if(messageContent.startsWith(`${prefix}ctb `)) 
         ctb.getCtbUser(message, bot, connection, discordClientId)
     
-    if(messageContent.split(' ')[0] == `${prefix}c` || messageContent.split(' ')[0] == `${prefix}compare`)
+    if(messageContent.split(' ')[0] == `${prefix}c ` || messageContent.split(' ')[0] == `${prefix}compare `)
         osu.compare(message, bot, connection, discordClientId)
 
 }   
