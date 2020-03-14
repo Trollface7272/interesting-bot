@@ -25,9 +25,9 @@ var connection
 function handleDisconnect() {
     var login = {
         host     : 'remotemysql.com',
-        user     : 'lWlguk3gRa',
-        password : 'M1rSnLmV6K',
-        database : 'lWlguk3gRa'
+        user     : 'UmINDl42ry',
+        password : 'Uz9kzeO203',
+        database : 'UmINDl42ry'
     }
 
     connection = mysql.createConnection(login)
