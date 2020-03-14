@@ -65,8 +65,24 @@ module.exports = {
         }
     },
     getDtAr(ar) {
-        if(ar <= 5) return 'no'
-        if(ar > 10) return 'no'
-        if(ar > 5) return ((ar * 2 + 13) / 3).toFixed(2)
+        let ms
+        let newAR;
+        if (ar > 5) {
+            ms = 200 + (11 - ar) * 100
+        }
+        else {
+            ms = 800 + (5 - ar) * 80
+        }
+
+        if (ms < 300) {
+            newAR = 11
+        }
+        else if (ms < 1200) {
+            newAR = Math.round((11 - (ms - 300) / 150) * 100) / 100
+        }
+        else {
+            newAR = Math.round((5 - (ms - 1200) / 120) * 100) / 100
+        }
+        return newAR;
     }
 }
