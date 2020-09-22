@@ -149,4 +149,4 @@ async function getData() {
 }   
 getData()
 })
-bot.login(token)
+bot.login(process.env.DISCORD_TOKEN)
